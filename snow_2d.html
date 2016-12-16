@@ -12,6 +12,7 @@
 			}
 			#container {
 				width: 1024px;
+				height: 768;
 				//margin-top: 50px;
 				//margin-left: -501px;
 				//left: 50%;
@@ -52,7 +53,7 @@
 			var gravityBehaviour, randomBehaviour, gravityWellBehaviour;
 			var rootIndex = 1;
 			var forceBehaviour;
-			var dataURL
+			var dataURL;
 			
 			Main();
 			function Main() {
@@ -60,17 +61,25 @@
 
 				
 				var tempCanvas = document.getElementById('tempCanvas')
+				var tempContext = tempCanvas.getContext('2d');
 				tempCanvas.width = 1024;
 				tempCanvas.height = 768;
 
 				var svg = '<svg><text x="'+(tempCanvas.width)/16+'" y="'+ ((tempCanvas.height) / 3) +'" style="font-family: Arial;font-size: 260px;font-weight: bold; stroke: #fff; fill: #fff;">Merry</text></svg>';
-				//var svg = '<svg><text x="1000" y="300" style="font-family: Arial;font-size: 200px;font-weight: bold; stroke: #fff; fill: #fff;">Merry</text></svg>';
-				console.log(svg);
 				canvg(document.getElementById('tempCanvas'), svg);
 
-				
+				dataURL = [];
 
-				dataURL = tempCanvas.toDataURL();
+				dataURL.push(tempCanvas.toDataURL());
+
+				tempContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+
+				svg = '<svg><text x="'+(tempCanvas.width)/16+'" y="'+ ((tempCanvas.height) / 3) +'" style="font-family: Arial;font-size: 260px;font-weight: bold; stroke: #fff; fill: #fff;">Xmas</text></svg>';
+				canvg(document.getElementById('tempCanvas'), svg);
+
+				dataURL.push(tempCanvas.toDataURL());
+
+
 				tempCanvas.remove();
 
 				canvas = document.getElementById("testCanvas");
@@ -92,7 +101,7 @@
 
 				//createProton();
 				//tick();
-				//canvas.addEventListener('mousemove', mousemoveHandler, false);
+				canvas.addEventListener('mousemove', mousemoveHandler, false);
 								canvas.addEventListener('mousedown', mouseDownHandler, false);
 
 				loadImage(dataURL);
@@ -101,7 +110,7 @@
 
 			function addStats() {
 				stats = new Stats();
-				stats.setMode(2);
+				stats.setMode(0);
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.left = '0px';
 				stats.domElement.style.top = '0px';
@@ -113,12 +122,12 @@
 				var logo = [];
 				var loader = new PxLoader();
 				console.log(dataURL);
-				logo[0] = loader.addImage(dataURL);
-				//logo[1] = loader.addImage('google/logo2.png');
+				logo.push(loader.addImage(dataURL[0]))
+				logo.push(loader.addImage(dataURL[1]))
 
 				loader.addCompletionListener(function() {
 
-					for (var i = 0; i < 1; i++) {
+					for (var i = 0; i < 2; i++) {
 						var imagedata = Proton.Util.getImageData(context, logo[i], rect);
 						logoZone.push(new Proton.ImageZone(imagedata, rect.x, rect.y));
 						imageDatas.push(imagedata);
@@ -138,7 +147,7 @@
 				
 				snowImgBlock();
 				
-				emitter.addInitialize(new Proton.Life(6, 15)); //not present
+				emitter.addInitialize(new Proton.Life(8, 10)); //not present
 
 				//emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.2, 0.5), new Proton.Span(0, 1), 1));
 				
@@ -155,7 +164,7 @@
 				//emitter.p.y = 0;
 
 				emitter.addBehaviour(randomBehaviour);
-				emitter.addBehaviour(customToZoneBehaviour(logoZone[0]));
+				emitter.addBehaviour(customToZoneBehaviour(logoZone));
 				//emitter.addBehaviour(crossBehaviour);
 				emitter.addBehaviour(gravityWellBehaviour);
 
@@ -184,34 +193,36 @@
 				}
 			}
 
-			function customToZoneBehaviour(zone1) {
+			function customToZoneBehaviour(zone) {
 				return {
 					initialize : function(particle) {
 						particle.R = Math.random() * 10;
 						particle.Angle = Math.random() * Math.PI * 2;
 						particle.speed = Math.random() * (-2) + 1;
-						//particle.zones = [zone1.getPosition().clone(), zone2.getPosition().clone()];
-						particle.zones = [zone1.getPosition().clone()];
+						var pZones = [];
+						pZones.push(zone[0].getPosition().clone());
+						pZones.push(zone[1].getPosition().clone());
+						particle.zones = pZones;
+						//particle.zones = [zone1.getPosition().clone()];
 						particle.colors = getColor(particle.zones);
 					},
 
 					applyBehaviour : function(particle) {
-						if (rootIndex % 2 == 0) {
+						if (rootIndex % 2 != 0) {
 							particle.v.clear();
 							particle.Angle += particle.speed;
 							var index = (rootIndex % 4 + 1) / 2 - 1;
-							//change to zones[index] if more than one image
-							var x = particle.zones[0].x + particle.R * Math.cos(particle.Angle);
-							var y = particle.zones[0].y + particle.R * Math.sin(particle.Angle);
+							var x = particle.zones[index].x + particle.R * Math.cos(particle.Angle);
+							var y = particle.zones[index].y + particle.R * Math.sin(particle.Angle);
 							particle.p.x += (x - particle.p.x) * 0.05;
 							particle.p.y += (y - particle.p.y) * 0.05;
-							particle.transform.rgb.r = particle.colors[0].r;
-							particle.transform.rgb.g = particle.colors[0].g;
-							particle.transform.rgb.b = particle.colors[0].b;
-						}
-					}
+							particle.transform.rgb.r = particle.colors[index].r;
+							particle.transform.rgb.g = particle.colors[index].g;
+							particle.transform.rgb.b = particle.colors[index].b;
 				}
+			}
 
+			}
 			}
 
 			function getColor(posArr) {
