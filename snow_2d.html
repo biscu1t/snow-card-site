@@ -51,7 +51,7 @@
 			var imageDatas;
 			var rect, rect2;
 			var gravityBehaviour, randomBehaviour, gravityWellBehaviour;
-			var rootIndex = 1;
+			var rootIndex = 0;
 			var forceBehaviour;
 			var dataURL;
 			
@@ -220,10 +220,10 @@ for (i = 0; i < logoStrings.length ; i++)
 					},
 
 					applyBehaviour : function(particle) {
-						if (rootIndex % 2 != 0) {
+						if (rootIndex % 2 != 0) { //odd
 							particle.v.clear();
 							particle.Angle += particle.speed;
-							var index = (rootIndex % 4 + 1) / 2 - 1;
+							var index = (rootIndex % 4 + 1) / 2 - 1; //1>>0 3>>1 5>>0 7>>1
 							var x = particle.zones[index].x + particle.R * Math.cos(particle.Angle);
 							var y = particle.zones[index].y + particle.R * Math.sin(particle.Angle);
 							particle.p.x += (x - particle.p.x) * 0.05;
@@ -247,11 +247,11 @@ for (i = 0; i < logoStrings.length ; i++)
 
 			function mouseDownHandler(e) {
 				rootIndex++;
-				if (rootIndex % 2 == 0) {
-					if (rootIndex % 4 == 2)
+				if (rootIndex % 2 == 0) {//Even number
+					if (rootIndex % 4 == 2) // 2,6,10,14,18 etc.
 						//randomBehaviour.reset(30, 30, 0.001); //TODO - cancel this after a few seconds
 						randomBehaviour.reset(0, 0, 0.001); //TODO - cancel this after a few seconds
-					else
+					else // 0,4,8,12,16
 						/*gravityWellBehaviour.reset({
 							x : canvas.width / 2,
 							y : canvas.height / 2
@@ -260,7 +260,7 @@ for (i = 0; i < logoStrings.length ; i++)
 							x : canvas.width / 2,
 							y : canvas.height / 2
 						}, 0, 0); // TODO - cancel this after a few seconds
-				} else {
+				} else { //odd number
 					randomBehaviour.reset(0, 0, 0.001);
 					gravityWellBehaviour.reset({
 						x : canvas.width / 2,
