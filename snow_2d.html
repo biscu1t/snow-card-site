@@ -65,21 +65,33 @@
 				tempCanvas.width = 1024;
 				tempCanvas.height = 768;
 
-				var svg = '<svg><text x="'+(tempCanvas.width)/16+'" y="'+ ((tempCanvas.height) / 3) +'" style="font-family: Arial;font-size: 260px;font-weight: bold; stroke: #fff; fill: #fff;">Merry</text></svg>';
-				canvg(document.getElementById('tempCanvas'), svg);
+				//var svg = '<svg><text x="'+(tempCanvas.width)/16+'" y="'+ ((tempCanvas.height) / 3) +'" style="font-family: Arial;font-size: 260px;font-weight: bold; stroke: #fff; fill: #fff;">Merry</text></svg>';
+				//canvg(document.getElementById('tempCanvas'), svg);
+var logoStrings;
 
-				dataURL = [];
+logoStrings = ["Merry","Christmas"];//,Kitt","Tahir","& Others"]
+dataURL = [];
+var height = "260"
 
+//tempContext.font="bold "+height+"px Arial";
+//				tempContext.textAlign="center";
+
+for (i = 0; i < logoStrings.length ; i++)
+{
+				tempContext.font="bold "+height+"px Arial";
+				tempContext.textAlign="center";			
+				tempContext.fillText(logoStrings[i],(tempCanvas.width/3),(tempCanvas.height/2)-(height/2),tempCanvas.width-350);
+	
 				dataURL.push(tempCanvas.toDataURL());
 
 				tempContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-
-				svg = '<svg><text x="'+(tempCanvas.width)/16+'" y="'+ ((tempCanvas.height) / 3) +'" style="font-family: Arial;font-size: 260px;font-weight: bold; stroke: #fff; fill: #fff;">Xmas</text></svg>';
+}
+/*				svg = '<svg><text x="'+(tempCanvas.width)/16+'" y="'+ ((tempCanvas.height) / 3) +'" style="font-family: Arial;font-size: 260px;font-weight: bold; stroke: #fff; fill: #fff;">Xmas</text></svg>';
 				canvg(document.getElementById('tempCanvas'), svg);
 
 				dataURL.push(tempCanvas.toDataURL());
 
-
+*/
 				tempCanvas.remove();
 
 				canvas = document.getElementById("testCanvas");
@@ -92,8 +104,8 @@
 				rect = new Proton.Rectangle((canvas.width - 800) / 2, (canvas.height - 400) / 2, 800, 400);
 				rect2 = new Proton.Rectangle(rect.x - 100, rect.y - 100, rect.width + 200, rect.height + 200);
 				randomBehaviour = new Proton.RandomDrift(0, 0, 0.05);
-				var rectZone = new Proton.RectZone(rect2.x, rect2.y, rect2.width, rect2.height);
-				crossBehaviour = new Proton.CrossZone(rectZone, 'bound');
+				//var rectZone = new Proton.RectZone(rect2.x, rect2.y, rect2.width, rect2.height);
+				//crossBehaviour = new Proton.CrossZone(rectZone, 'bound');
 				gravityWellBehaviour = new Proton.GravityWell({
 					x : canvas.width / 2,
 					y : canvas.height / 2
@@ -147,7 +159,7 @@
 				
 				snowImgBlock();
 				
-				emitter.addInitialize(new Proton.Life(8, 10)); //not present
+				emitter.addInitialize(new Proton.Life(3, 5)); //not present
 
 				//emitter.addInitialize(new Proton.Velocity(new Proton.Span(0.2, 0.5), new Proton.Span(0, 1), 1));
 				
@@ -237,12 +249,17 @@
 				rootIndex++;
 				if (rootIndex % 2 == 0) {
 					if (rootIndex % 4 == 2)
-						randomBehaviour.reset(30, 30, 0.001);
+						//randomBehaviour.reset(30, 30, 0.001); //TODO - cancel this after a few seconds
+						randomBehaviour.reset(0, 0, 0.001); //TODO - cancel this after a few seconds
 					else
+						/*gravityWellBehaviour.reset({
+							x : canvas.width / 2,
+							y : canvas.height / 2
+						}, 3000, 500); */ // TODO - cancel this after a few seconds
 						gravityWellBehaviour.reset({
 							x : canvas.width / 2,
 							y : canvas.height / 2
-						}, 3000, 500);
+						}, 0, 0); // TODO - cancel this after a few seconds
 				} else {
 					randomBehaviour.reset(0, 0, 0.001);
 					gravityWellBehaviour.reset({
@@ -261,7 +278,7 @@
 					_y = e.offsetY - canvas.height / 2;
 				}
 
-				var R = 3.9;
+				var R = 2;
 				var tha = Math.atan2(_y, _x);
 				var x = Math.cos(tha) * R;
 				var y = Math.sin(tha) * R;
