@@ -1,0 +1,19 @@
+			body {
+				background-color: #333333;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#container {
+				width: window.innerWidth;
+				height: window.innerHeight;
+				//margin-top: 50px;
+				//margin-left: -501px;
+				//left: 50%;
+				position: absolute;
+			}
+			#tempCanvas {
+				background: #000000;
+			}
+			#testCanvas {
+				background: #000000;
+			}
