@@ -52,7 +52,8 @@
 			var rect, rect2; //proton rectangle objects
 			var gravityBehaviour, randomBehaviour, gravityWellBehaviour, forceBehaviour; //defines particle behaviours
 			var sceneIndex = 0;//tracks progress through scenes
-			var messageArray;
+			var messageArray;    //Stored messages from "message" param
+			var b64MessageArray; //Stored messages from "b64mess" params in Base64
 			var dataURLArray; //array for storing image data URL's
 			var clearBehaviourTimeout,nextEffectTimeout; //var for storing timeout which clears gravity well / random behaviour 
 			var snowType;     //string which stores "pixel" for pixel snow or "canvas" for bitmap snow 
@@ -327,16 +328,39 @@
 			console.log("snowtype: "+snowtype);
 		}
 
+		function b64DecodeUnicode(str) {
+			return decodeURIComponent(Array.prototype.map.call(atob(str), function(c) {
+				return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+			}).join(''));
+		}
+
 		function populateMessageArray(queryArray){
 
 			var message = queryArray["message"];
+			var b64Message = queryArray["b64mess"];
+			messageArray = [];
+			b64MessageArray = [];
+
 		
-			if (message == null){
+			if (message == null && b64Message == null)
 				messageArray = ["Message","Here"];
-			}else{
+			else if (message !=null)
 				messageArray = message.split(';');
-			}
+			
 			console.log("message = " + message);
+            
+			message = "";
+			if (b64Message != null){
+				message = b64DecodeUnicode(b64Message);				
+				b64MessageArray = message.split(';'); //should be ; but not decoding right at the moment
+			}
+
+			if (messageArray != null)
+			messageArray = messageArray.concat(b64MessageArray);
+			else
+			messageArray = b64MessageArray;
+
+			console.log("b64message = " + message);
 
 			}
 
@@ -357,6 +381,7 @@
 			tempContext.textAlign="center";		
 
 			console.log("messageArray: " + messageArray);
+			console.log("messageArray[0]: " + messageArray[0]);
 
 			for (i = 0; i < messageArray.length ; i++){
 				tempContext.fillText(messageArray[i],(tempCanvas.width/2),(tempCanvas.height/2)+(fontHeight/3),tempCanvas.width);	
