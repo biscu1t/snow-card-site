@@ -292,7 +292,17 @@
 				clearTimeout(clearBehaviourTimeout);
 				clearTimeout(nextEffectTimeout);
 				
+				
+				console.log("e.clientX" + e.clientX);
+				console.log("e.clientY" + e.clientY);
+
+
 				sceneIndex++;
+
+				console.log("sceneIndex "+ sceneIndex);
+				console.log("e.clientX" + e.clientX);
+				console.log("e.clientY" + e.clientY);
+
 				if (sceneIndex % 2 == 0) {//Even number
 					if (sceneIndex % 4 == 2) {// 2,6,10,14,18 etc.
 						randomBehaviour.reset(30, 30, 0.001);
@@ -300,10 +310,10 @@
 					}
 					else {// 0,4,8,12,16
 						gravityWellBehaviour.reset({
-							x : e.clientX,
-							y : e.clientY
-						}, 30000, 50000);  // TODO - cancel this after a few seconds
-						clearBehaviourTimeout = setTimeout(clearBehaviours,3000);
+							x : easStage.mouseX,
+							y : easStage.mouseY
+						}, 30000, 50000);
+						//clearBehaviourTimeout = setTimeout(clearBehaviours,3000);
 					}
 				} else { //odd number
 					randomBehaviour.reset(0, 0, 0.001);
